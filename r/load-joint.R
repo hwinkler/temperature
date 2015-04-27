@@ -1,13 +1,15 @@
-load.temperatures <- function (site.details.path, data.path) {
-    dataColNames = c(
+                       
+LoadJoint <- function (site.path, data.path) {
+# without fill=TRUE, we get errors on some rows. TODO investigate
+                                      
+    dataColNames <- c(
         "station_id",
         "series_number",
         "date",
         "temperature",
         "uncertainty",
         "observations",
-        "time_of_observation"
-    );
+        "time_of_observation" )
 
     dataColClasses <- c(
         "numeric",
@@ -16,9 +18,9 @@ load.temperatures <- function (site.details.path, data.path) {
         "numeric",
         "numeric",
         "numeric",
-        "numeric");
+        "numeric")
 
-    siteColNames = c(
+    siteColNames <- c(
         "station_id",
         "station_name",
         "latitude",
@@ -38,8 +40,7 @@ load.temperatures <- function (site.details.path, data.path) {
         "num_relocations",
         "num_suggested_relocations",
         "num_sources",
-        "hash"
-    );
+        "hash" )
 
     siteColClasses <- c(
         "numeric",
@@ -61,11 +62,11 @@ load.temperatures <- function (site.details.path, data.path) {
         "numeric",
         "numeric",
         "numeric",
-        "character");
+        "character")
 
-    #without fill=TRUE, we get errors on some rows. TODO investigate
+
     site.detail<- read.table(
-        site.detail.path,
+        site.path,
         sep = "\t",
         comment.char = "%",
         fill=TRUE,
@@ -105,10 +106,11 @@ load.temperatures <- function (site.details.path, data.path) {
         ordered=TRUE,
         labels=c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec") )
 
-    yearbreaks =  c(
-        sort( as.integer(10*unique(floor(years/10)))),
-        2020)
     
+    years <- floor(dates)
+
+    yearbreaks <- sort( as.integer(10*unique(floor(years/10))))
+
     decade <- cut(
         years,
         breaks= c(yearbreaks, 2020),
@@ -116,11 +118,10 @@ load.temperatures <- function (site.details.path, data.path) {
         ordered_result=TRUE)
 
 
-    elevations.factor <- cut(
+    elevation <- cut(
         as.matrix(merged["elevation"]),
         breaks=c(0, 1000, 2000, 3000, 4000, 5000, 6000),
         ordered_result=TRUE)
 
-    return  table(
-        temperature, latitude, decade, month, elevation)
+    return  (table(temperature, latitude, decade, month, elevation))
 }
