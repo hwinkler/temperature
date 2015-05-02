@@ -1,0 +1,7 @@
+
+gRain requires RGBL package and it is not at CRAN.
+
+>source("http://bioconductor.org/biocLite.R")
+>biocLite("RBGL")
+
+
