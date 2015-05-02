@@ -120,8 +120,29 @@ LoadJoint <- function (site.path, data.path) {
 
     elevation <- cut(
         as.matrix(merged["elevation"]),
-        breaks=c(0, 1000, 2000, 3000, 4000, 5000, 6000),
+        breaks=c(-1000, 0, 1000, 2000, 3000, 4000, 5000, 6000),
         ordered_result=TRUE)
 
-    return  (table(temperature, latitude, decade, month, elevation))
+    # Joint
+    table(temperature, latitude, decade, month, elevation)
+
+
+    # good reference: http://www.datavis.ca/courses/VCD/vcd-tutorial.pdf
+    
+}
+
+MakeTGivenRest <- function (joint) {
+    t.ldme.vals = c()
+    for (e in 1:length(joint[1,1,1,1,])){
+        for (m in 1:length(joint[1,1,1,,1])){
+            for (d in 1:length(joint[1,1,,1,1])){
+                for (l in 1:length(joint[1,,1,1,1])){
+                    f <- joint[,l,d,m,e] + 1.0E-30
+                    p <- f / (sum(f) + 1.0E-30)
+                    t.ldme.vals <- c (t.ldme.vals, f / (sum(f) + 1.0E-30))  
+                }
+            }
+        }
+    }
+    t.ldme.vals
 }
