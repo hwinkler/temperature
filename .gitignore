@@ -2,3 +2,7 @@ Berkeley Temperature Data QCd
 rdata
 Temperature.RData
 Rhistory
+gRain
+.DS_Store
+.RData
+.Rhistory
