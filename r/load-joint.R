@@ -90,7 +90,7 @@ LoadJoint <- function (site.path, data.path) {
     
     temperature <- cut(
         as.matrix(merged["temperature"]),
-        breaks = seq(from=-70, to=50, by=10) ,
+        breaks = seq(from=-70, to=50, by=2.5) ,
         ordered_result=TRUE)
     
     latitude <- cut(
