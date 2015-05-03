@@ -97,7 +97,12 @@ LoadJoint <- function (site.path, data.path) {
     
     latitude <- cut(
         as.matrix(merged["latitude"]),
-        breaks=c(-90,-60,-30,0,30,60,90),
+        breaks= seq(from=-90, to=90, by=5),
+        ordered_result=TRUE)
+
+    longitude <- cut(
+        as.matrix(merged["longitude"]),
+        breaks=seq (from=-180, to=180, by=5),
         ordered_result=TRUE)
 
     dates <- as.matrix(merged["date"])
@@ -126,7 +131,7 @@ LoadJoint <- function (site.path, data.path) {
         ordered_result=TRUE)
 
     # Joint frequencies
-    table(temperature, latitude, decade, month, elevation)
+    table(temperature, latitude, longitude, decade, month, elevation)
 
 
     # good reference: http://www.datavis.ca/courses/VCD/vcd-tutorial.pdf
@@ -134,24 +139,27 @@ LoadJoint <- function (site.path, data.path) {
 }
 
 MakeTGivenRest <- function (joint) {
-    ne <- length(joint[1,1,1,1,])
-    nm <- length(joint[1,1,1,,1])
-    nd <- length(joint[1,1,,1,1])
-    nl <-length(joint[1,,1,1,1])
-    nt <- length(joint[,1,1,1,1])
-    t.ldme.vals = numeric(length = ne*nm*nd*nl*nt)
+    ne <- length(joint[1,1,1,1,1,])
+    nm <- length(joint[1,1,1,1,,1])
+    nd <- length(joint[1,1,1,,1,1])
+    nlon <-length(joint[1,1,,1,1,1])
+    nlat <-length(joint[1,,1,1,1,1])
+    nt <- length(joint[,1,1,1,1,1])
+    t.lldme.vals = numeric(length = ne*nm*nd*nlat*nlon*nt)
   
     for (e in 1:ne){ 
         for (m in 1:nm){
             for (d in 1:nd){
-                for (l in 1:nl){
-                    f <- joint[,l,d,m,e] + 1.0E-150
-                    p <- f / (sum(f) + 1.0E-150)               
-                    idx <- (( (e-1) * nm + (m-1)) * nd + (d-1)) * nl + (l-1)
-                    t.ldme.vals[(idx * nt + 1):(idx * nt + nt)] <- p
+                for (lat in 1:nlat){
+                    for (lon in 1: nlon) {
+                        f <- joint[,lat,lon,d,m,e] + 1.0E-150
+                        p <- f / (sum(f) + 1.0E-150)               
+                        idx <- ((( (e-1) * nm + (m-1)) * nd + (d-1)) * nlon + (lon-1)) * nlat + (lat-1)
+                        t.lldme.vals[(idx * nt + 1):(idx * nt + nt)] <- p
+                    }
                 }
             }
         }
     }
-    return(t.ldme.vals)
+    return(t.lldme.vals)
 }
