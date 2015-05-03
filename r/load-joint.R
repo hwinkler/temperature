@@ -132,14 +132,24 @@ LoadJoint <- function (site.path, data.path) {
 }
 
 MakeTGivenRest <- function (joint) {
-    t.ldme.vals = c()
-    for (e in 1:length(joint[1,1,1,1,])){
+    ne <- length(joint[1,1,1,1,])
+    nm <- length(joint[1,1,1,,1])
+    nd <- length(joint[1,1,,1,1])
+    nl <-length(joint[1,,1,1,1])
+    nt <- length(joint[,1,1,1,1])
+    t.ldme.vals = numeric(length = ne*nm*nd*nl * nt)
+    for (e in 1:length(joint[1,1,1,1,])){ 
         for (m in 1:length(joint[1,1,1,,1])){
             for (d in 1:length(joint[1,1,,1,1])){
                 for (l in 1:length(joint[1,,1,1,1])){
-                    f <- joint[,l,d,m,e] + 1.0E-30
-                    p <- f / (sum(f) + 1.0E-30)
-                    t.ldme.vals <- c (t.ldme.vals, f / (sum(f) + 1.0E-30))  
+                    ## f <- joint[,l,d,m,e] + 1.0E-30
+                    ## p <- f / (sum(f) + 1.0E-30)
+                    ## t.ldme.vals <- c (t.ldme.vals, f / (sum(f) + 1.0E-30))
+                    ## j = l + d * nl + m * nd * nl + e * nm * nd * nl;
+                    idx <-  ( (d-1) + ( (m-1)   + (e-1) * nm ) * nd ) * nl  ;
+                    f <- joint[,l,d,m,e] + 1.0E-150
+                    p <- f / (sum(f) + 1.0E-150)
+                    t.ldme.vals[(idx * nt +1 ):(idx * nt + nt )] <- f / (sum(f) + 1.0E-150)                    
                 }
             }
         }

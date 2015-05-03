@@ -7,7 +7,7 @@ decade <- cptable( ~d,  values = margin.table(joint, 3),  levels = names(margin.
 month <- cptable( ~m,  values = margin.table(joint, 4),  levels = names(margin.table(joint, 4) ))
 elevation <- cptable( ~e,  values = margin.table(joint, 5),  levels = names(margin.table(joint, 5)))
 temperature.ldme.vals <- MakeTGivenRest(joint )
-temperaturet.ldme <- cptable(~t|l:d:m:e, values=temperature.ldme.vals, levels=names(joint[,1,1,1,1]))
+temperature.ldme <- cptable(~t|l:d:m:e, values=temperature.ldme.vals, levels=names(joint[,1,1,1,1]))
                      
 plist <- compileCPT(list(latitude, decade, month, elevation, temperature.ldme))
 net1 <- grain(plist)
