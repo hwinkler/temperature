@@ -85,6 +85,8 @@ LoadJoint <- function (site.path, data.path) {
         col.names = dataColNames,
         quote = "")
 
+    data <- subset ( data, date >= 1901)
+    
     merged <- merge(site.detail, data)
 
     

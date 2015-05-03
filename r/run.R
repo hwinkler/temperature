@@ -20,4 +20,5 @@ pjoint2 <- querygrain(net1,nodes=c("t","l","d","m","e"), type="joint")
 ## Global mean surface temp by decade
 gmst.d <- querygrain (net1, c( "t", "d"), type="conditional")
 
-image(seq(1:120) * 1 - 75, seq(1:32) * 10 + 1690, gmst.d, col=heat.colors(64), xlab='Temperature' , ylab = 'Year')
+image(seq(1:120) * 1 - 75, seq(1: ((2020 -1900)/10)) * 10 + 1900 - 10, gmst.d, col=heat.colors(64), xlab='Temperature' , ylab = 'Year')
+
