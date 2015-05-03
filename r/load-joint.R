@@ -90,7 +90,7 @@ LoadJoint <- function (site.path, data.path) {
     
     temperature <- cut(
         as.matrix(merged["temperature"]),
-        breaks = seq(from=-70, to=50, by=10) ,
+        breaks = seq(from=-70, to=50, by= 1) ,
         ordered_result=TRUE)
     
     latitude <- cut(
@@ -123,7 +123,7 @@ LoadJoint <- function (site.path, data.path) {
         breaks=c(-1000, 0, 1000, 2000, 3000, 4000, 5000, 6000),
         ordered_result=TRUE)
 
-    # Joint
+    # Joint frequencies
     table(temperature, latitude, decade, month, elevation)
 
 
@@ -132,17 +132,24 @@ LoadJoint <- function (site.path, data.path) {
 }
 
 MakeTGivenRest <- function (joint) {
-    t.ldme.vals = c()
-    for (e in 1:length(joint[1,1,1,1,])){
-        for (m in 1:length(joint[1,1,1,,1])){
-            for (d in 1:length(joint[1,1,,1,1])){
-                for (l in 1:length(joint[1,,1,1,1])){
-                    f <- joint[,l,d,m,e] + 1.0E-30
-                    p <- f / (sum(f) + 1.0E-30)
-                    t.ldme.vals <- c (t.ldme.vals, f / (sum(f) + 1.0E-30))  
+    ne <- length(joint[1,1,1,1,])
+    nm <- length(joint[1,1,1,,1])
+    nd <- length(joint[1,1,,1,1])
+    nl <-length(joint[1,,1,1,1])
+    nt <- length(joint[,1,1,1,1])
+    t.ldme.vals = numeric(length = ne*nm*nd*nl*nt)
+  
+    for (e in 1:ne){ 
+        for (m in 1:nm){
+            for (d in 1:nd){
+                for (l in 1:nl){
+                    f <- joint[,l,d,m,e] + 1.0E-150
+                    p <- f / (sum(f) + 1.0E-150)               
+                    idx <- (( (e-1) * nm + (m-1)) * nd + (d-1)) * nl + (l-1)
+                    t.ldme.vals[(idx * nt + 1):(idx * nt + nt)] <- p
                 }
             }
         }
     }
-    t.ldme.vals
+    return(t.ldme.vals)
 }
